@@ -11,7 +11,7 @@ export class AppComponent {
   public tableHeader = 'My custom table header';
   public pendingMessage = 'Данные загружаются';
   public notFoundData = 'Данные не найдены';
-  public tableColumns: ColumnPropertiesInterface[] = [
+  public tableColumns: any[] = [
     {
       display: true,
       order: 1,
