@@ -15,17 +15,17 @@ export class AppComponent {
     {
       display: true,
       order: 1,
-      header: 'Name'
+      header: 'name'
     },
     {
       display: true,
       order: 2,
-      header: 'Type'
+      header: 'type'
     },
     {
       display: true,
       order: 3,
-      header: 'Author'
+      header: 'author'
     }
   ];
 }

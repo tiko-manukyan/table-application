@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { ColumnPropertiesInterface } from "../models/models";
+import { ColumnPropertiesInterface, GridRequestInterface } from "../models/models";
 import { DataService } from "../services/data/data.service";
 import { LoadingService } from "../services/loading/loading.service";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -30,36 +30,30 @@ export class MyTableComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-
-    this.loading.setLoading(true);
-    this.route.queryParams.subscribe((paramss) => {
-      console.log(paramss)
+    this.route.queryParams.subscribe((params) => {
+      this.loading.setLoading(true);
       this.dataService.getTableData()
-        .subscribe((r) => {
+        .subscribe((data) => {
           this.loading.setLoading(false);
-          this.data = Object.values(r)[0]
+          this.data = Object.values(data)[0]
         })
     })
   }
 
-  onNavigate(type = '', by = '', page= 1) {
+  onNavigate(column: GridRequestInterface | any) {
     this.router.navigate([],
       {
-        queryParams: {type: type, by:by},
+        queryParams: column,
         queryParamsHandling: "merge"
       })
   }
 
   public sortBy(column: string | undefined) {
-    const sortedCol: any = {
-        by: column,
-        type: 'desc'
+    const params = {
+      order_by: column,
+      order_type: 'desc'
     }
-    this.router.navigate([],
-      {
-        queryParams: {type: sortedCol.type, by:sortedCol.by},
-        queryParamsHandling: "merge"
-      })
+    this.onNavigate(params);
   }
 
   public previousPage() {
@@ -67,9 +61,13 @@ export class MyTableComponent implements OnInit {
       return
     }
     this.currentPage--;
+    const params = {page: this.currentPage}
+    this.onNavigate(params)
   }
 
   public nextPage() {
     this.currentPage++;
+    const params = {page: this.currentPage}
+    this.onNavigate(params)
   }
 }

@@ -1,7 +1,7 @@
 <ng-container *ngIf="loading.isLoading$ | async">
   {{ messagePending }}
 </ng-container>
-<div *ngIf="data.length" class="table_content">
+<div *ngIf="data.length && !(loading.isLoading$ | async)" class="table_content">
   <div *ngIf="showTool; else noToolbar" class="table_toolbar">
     <span>Теги: {{ data.length }}</span>
     <div class="table_toolbar__input">
@@ -19,7 +19,7 @@
         <th *ngFor="let col of columns"
             (click)="sortBy(col.header)"
         >
-          {{ col.header }}
+          {{ col.header | titlecase }}
         </th>
       </tr>
       </thead>
