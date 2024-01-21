@@ -1,18 +1,12 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from "@angular/common/http";
+import {HttpClient, HttpParams} from "@angular/common/http";
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataService {
   constructor(private http: HttpClient) { }
-
-
-  public getTableData(body: {} = {}) {
-    return this.http
-      .post(
-        'https://mytable.free.mockoapp.net/all',
-        body
-      )
+  public getTableData(url: string, body: {} = {page:1, limit:20}) {
+    return this.http.post(url, body)
   }
 }

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {ColumnPropertiesInterface} from "./models/models";
+import {ColumnPropertiesInterface, RequestType} from "./models/models";
 
 @Component({
   selector: 'app-root',
@@ -8,6 +8,7 @@ import {ColumnPropertiesInterface} from "./models/models";
 })
 export class AppComponent {
 
+  public url = 'https://mytable.free.mockoapp.net/all';
   public tableHeader = 'My custom table header';
   public pendingMessage = 'Данные загружаются';
   public notFoundData = 'Данные не найдены';

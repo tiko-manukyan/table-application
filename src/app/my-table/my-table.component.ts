@@ -11,15 +11,16 @@ import { ActivatedRoute, Router } from "@angular/router";
 })
 export class MyTableComponent implements OnInit {
 
+  @Input() URL!: string
   @Input() autoLoading = true;
   @Input() messageNotFound = '';
   @Input() messagePending = '';
   @Input() header: string = '';
   @Input() columns: ColumnPropertiesInterface[] = []
   public data: any = [];
-  private params: any;
   public showTool = true;
   public currentPage = 1;
+  private limit =  20;
 
 
   constructor(
@@ -31,8 +32,10 @@ export class MyTableComponent implements OnInit {
 
   ngOnInit() {
     this.route.queryParams.subscribe((params) => {
+      this.currentPage = isNaN(+params['page']) ? 1 : +params['page'];
+      this.limit = isNaN(+params['limit']) ? 20 : +params['limit'];
       this.loading.setLoading(true);
-      this.dataService.getTableData()
+      this.dataService.getTableData(this.URL, params)
         .subscribe((data) => {
           this.loading.setLoading(false);
           this.data = Object.values(data)[0]
@@ -43,7 +46,7 @@ export class MyTableComponent implements OnInit {
   onNavigate(column: GridRequestInterface | any) {
     this.router.navigate([],
       {
-        queryParams: column,
+        queryParams: {...column, page: this.currentPage, limit:this.limit},
         queryParamsHandling: "merge"
       })
   }

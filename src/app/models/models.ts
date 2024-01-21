@@ -16,3 +16,16 @@ export interface GridRequestInterface {
     type: 'desc' | 'asc';
   };
 }
+
+export interface RequestType  {
+  page: number;
+  limit: number;
+  order: {
+    by: string,
+    type: 'desc' | 'asc'
+  };
+  filters?: [];
+  search?: string;
+  dateFrom?: null;
+  dateTo?: null;
+}
