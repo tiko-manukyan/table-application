@@ -8,6 +8,7 @@ import {TableToolbar} from "./models/models";
 })
 export class AppComponent {
 
+  readonly token = "WriteYourTokenHere"
   public url = 'https://mytable.free.mockoapp.net/all';
   public tableHeader = 'My custom table header';
   public pendingMessage = 'Данные загружаются';

@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { ColumnPropertiesInterface, GridRequestInterface, TableToolbar } from "../models/models";
+import { ColumnPropertiesInterface, TableToolbar } from "../models/models";
 import { DataService } from "../services/data/data.service";
 import { LoadingService } from "../services/loading/loading.service";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, Params, Router } from "@angular/router";
 
 @Component({
   selector: 'app-my-table',
@@ -11,21 +11,19 @@ import { ActivatedRoute, Router } from "@angular/router";
 })
 export class MyTableComponent implements OnInit {
 
-  @Input() URL!: string
+  @Input() token: string = '';
+  @Input() URL = '';
   @Input() autoLoading = true;
-  @Input() messageNotFound = '';
+  @Input() header = '';
   @Input() messagePending = '';
-  @Input() header: string = '';
-  @Input() columns: ColumnPropertiesInterface[] = []
-  @Input() tableToolbar:TableToolbar = {}
-  public data: any = [];
+  @Input() tableDataNotFound = '';
+  @Input() columns: ColumnPropertiesInterface[] = [];
+  @Input() tableToolbar:TableToolbar = {};
+  public data: any[] = [];
   public currentPage = 1;
   public limit =  20;
-  public  limitOptions = [20, 50, 100]
-
-  private params: any = [];
-
-
+  public limitOptions = [20, 50, 100];
+  private params: Params = [];
   constructor(
     private dataService: DataService,
     public loading: LoadingService,
@@ -38,16 +36,18 @@ export class MyTableComponent implements OnInit {
       this.params = params;
       this.currentPage = isNaN(+params['page']) ? 1 : +params['page'];
       this.limit = isNaN(+params['limit']) ? 20 : +params['limit'];
-      this.loading.setLoading(true);
-      this.dataService.getTableData(this.URL, params)
-        .subscribe((data) => {
-          this.loading.setLoading(false);
-          this.data = Object.values(data)[0]
-        })
-    })
+      if (this.autoLoading && this.token) {
+        this.loading.setLoading(true);
+        this.dataService.getTableData(this.URL, params)
+          .subscribe((data) => {
+            this.loading.setLoading(false);
+            this.data = Object.values(data)[0];
+          });
+      }
+    });
   }
 
-  onNavigate(column: GridRequestInterface | any) {
+  onTriggerEvent(column: {}): void {
     this.router.navigate([],
       {
         queryParams: {...column, page: this.currentPage},
@@ -55,38 +55,38 @@ export class MyTableComponent implements OnInit {
       })
   }
 
-  public sortBy(column: any) {
-    if (!column.sorting) {
+  public sortBy({ header, sorting }: ColumnPropertiesInterface): void {
+    if (!sorting) {
       return;
     }
     const params = {
-      order_by: column.header,
-      order_type: this.params.order_type === 'desc' ? 'asc' : 'desc'
+      order_by: header,
+      order_type: this.params['order_type'] === 'desc' ? 'asc' : 'desc'
     }
-    this.onNavigate(params);
+    this.onTriggerEvent(params);
   }
 
-  public previousPage() {
+  public setPageLimit(size: number): void {
+    const params = { limit: size};
+    this.onTriggerEvent(params);
+  }
+
+  public previousPage(): void {
     if (this.currentPage === 1) {
-      return
+      return;
     }
     this.currentPage--;
-    const params = {page: this.currentPage}
-    this.onNavigate(params)
+    const params = {page: this.currentPage};
+    this.onTriggerEvent(params);
   }
 
-  public nextPage() {
+  public nextPage(): void {
     this.currentPage++;
-    const params = {page: this.currentPage}
-    this.onNavigate(params)
+    const params = {page: this.currentPage};
+    this.onTriggerEvent(params);
   }
 
   public isEmptyObject(obj: {}): boolean {
-    return (obj && (Object.keys(obj).length === 0));
-  }
-
-  public setPageLimit(limit: number) {
-    const params = { limit: limit};
-    this.onNavigate(params)
+    return (obj && (Object.values(obj).includes(true)));
   }
 }
