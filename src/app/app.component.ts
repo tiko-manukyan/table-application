@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {ColumnPropertiesInterface, RequestType} from "./models/models";
+import {TableToolbar} from "./models/models";
 
 @Component({
   selector: 'app-root',
@@ -16,17 +16,25 @@ export class AppComponent {
     {
       display: true,
       order: 1,
-      header: 'name'
+      header: 'name',
+      sorting: true
     },
     {
       display: true,
       order: 2,
-      header: 'type'
+      header: 'type',
+      sorting: true
     },
     {
       display: true,
       order: 3,
-      header: 'author'
+      header: 'author',
+      sorting: false
     }
   ];
+  public tableToolbar: TableToolbar = {
+    totalDataCount: true,
+    search: true,
+    limit: true
+  };
 }

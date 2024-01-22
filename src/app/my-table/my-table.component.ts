@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { ColumnPropertiesInterface, GridRequestInterface } from "../models/models";
+import { ColumnPropertiesInterface, GridRequestInterface, TableToolbar } from "../models/models";
 import { DataService } from "../services/data/data.service";
 import { LoadingService } from "../services/loading/loading.service";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -17,10 +17,13 @@ export class MyTableComponent implements OnInit {
   @Input() messagePending = '';
   @Input() header: string = '';
   @Input() columns: ColumnPropertiesInterface[] = []
+  @Input() tableToolbar:TableToolbar = {}
   public data: any = [];
-  public showTool = true;
   public currentPage = 1;
-  private limit =  20;
+  public limit =  20;
+  public  limitOptions = [20, 50, 100]
+
+  private params: any = [];
 
 
   constructor(
@@ -32,6 +35,7 @@ export class MyTableComponent implements OnInit {
 
   ngOnInit() {
     this.route.queryParams.subscribe((params) => {
+      this.params = params;
       this.currentPage = isNaN(+params['page']) ? 1 : +params['page'];
       this.limit = isNaN(+params['limit']) ? 20 : +params['limit'];
       this.loading.setLoading(true);
@@ -46,15 +50,18 @@ export class MyTableComponent implements OnInit {
   onNavigate(column: GridRequestInterface | any) {
     this.router.navigate([],
       {
-        queryParams: {...column, page: this.currentPage, limit:this.limit},
+        queryParams: {...column, page: this.currentPage},
         queryParamsHandling: "merge"
       })
   }
 
-  public sortBy(column: string | undefined) {
+  public sortBy(column: any) {
+    if (!column.sorting) {
+      return;
+    }
     const params = {
-      order_by: column,
-      order_type: 'desc'
+      order_by: column.header,
+      order_type: this.params.order_type === 'desc' ? 'asc' : 'desc'
     }
     this.onNavigate(params);
   }
@@ -71,6 +78,15 @@ export class MyTableComponent implements OnInit {
   public nextPage() {
     this.currentPage++;
     const params = {page: this.currentPage}
+    this.onNavigate(params)
+  }
+
+  public isEmptyObject(obj: {}): boolean {
+    return (obj && (Object.keys(obj).length === 0));
+  }
+
+  public setPageLimit(limit: number) {
+    const params = { limit: limit};
     this.onNavigate(params)
   }
 }

@@ -29,3 +29,9 @@ export interface RequestType  {
   dateFrom?: null;
   dateTo?: null;
 }
+
+export interface TableToolbar {
+  totalDataCount?: boolean;
+  search?: boolean;
+  limit?: boolean;
+}

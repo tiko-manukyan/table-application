@@ -6,18 +6,20 @@ import { AppComponent } from './app.component';
 import { MyTableComponent } from './my-table/my-table.component';
 import { HttpClientModule } from "@angular/common/http";
 import { TableLibComponent } from "table-lib";
+import { FormsModule } from "@angular/forms";
 
 @NgModule({
   declarations: [
     AppComponent,
     MyTableComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    HttpClientModule,
-    TableLibComponent
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        HttpClientModule,
+        TableLibComponent,
+        FormsModule
+    ],
   providers: [],
   bootstrap: [AppComponent],
   schemas: [NO_ERRORS_SCHEMA]
