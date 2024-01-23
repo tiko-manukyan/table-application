@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {TableToolbar} from "./models/models";
+import {ColumnPropertiesInterface, TableToolbar} from "./models/models";
 
 @Component({
   selector: 'app-root',
@@ -13,7 +13,7 @@ export class AppComponent {
   public tableHeader = 'My custom table header';
   public pendingMessage = 'Данные загружаются';
   public notFoundData = 'Данные не найдены';
-  public tableColumns: any[] = [
+  public tableColumns: ColumnPropertiesInterface[] = [
     {
       display: true,
       order: 1,
